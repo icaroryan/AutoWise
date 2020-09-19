@@ -1,4 +1,5 @@
-import os, re
+import re, sys
+from os import system, name 
 from time import sleep
 from datetime import datetime
 
@@ -14,6 +15,14 @@ def get_exchange_rates(from_currency, to_currency, now):
     return data
 
 
+def clear():
+    # If windows
+    if name == "nt":
+        system('cls') 
+    # If mac
+    else:
+        system('clear')
+
 # Prompt the user for the Currencies
 from_currency = input(f"\nWhat Currency you want to convert FROM? (ex: USD) ")
 
@@ -23,7 +32,7 @@ to_currency = input(f"What Currency you want to convert TO? (ex: CAD) ")
 auto_prompt = input(f"\nDo you want us to automatically open a transaction when the Exchange Rate reach a threshold? ([Y]es or [N]o) ")
 auto_mode = None
 # auto_mode = re.??? ### TO-DO
-
+clear()
 while True:
     from_currency = from_currency.upper()
     to_currency = to_currency.upper()
@@ -35,7 +44,8 @@ while True:
         print("\n Currency not found, please try again!")
         break
 
-    print(f"1 {from_currency} = {round(rate, 4)} {to_currency}")
+    print(f"\r1 {from_currency} = {round(rate, 4)} {to_currency}", end="")
+    # print(f"1 {from_currency} = {round(rate, 4)} {to_currency}")
     sleep(1)
 
 if auto_mode:
