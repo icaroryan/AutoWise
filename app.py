@@ -42,7 +42,7 @@ while True:
         rate = get_exchange_rates(from_currency, to_currency, now)
     except:
         print("\n Currency not found, please try again!")
-        break
+        
 
     print(f"\r1 {from_currency} = {round(rate, 4)} {to_currency}", end="")
     # print(f"1 {from_currency} = {round(rate, 4)} {to_currency}")
