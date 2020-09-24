@@ -21,7 +21,6 @@ def clear():
 account = None
 
 def auto_send():
-    global account
     print(f"Activating TransferWise MODE\n")
     print(f"\nDon't worry, only you will have access to these information!\n")
 
@@ -36,7 +35,8 @@ def auto_send():
             break
         except ValueError:
             print("Invalid Value!")
-    
+            
+    global account
     account = TransferWise(email, pwd, threshold)
 
 
@@ -58,7 +58,7 @@ while True:
     # Ask if the user wants the automatic money sender turned ON (transfer wise)
     auto_prompt = input(f"\nDo you want us to automatically open a transaction when the Exchange Rate reach your threshold? ([Y]es or [N]o) ")
 
-    if auto_true := re.findall("y|yes", auto_prompt.lower()):
+    if auto_true := re.findall("^y$|^yes$", auto_prompt.lower()):
         clear()
         auto_send()
         auto_mode = True
