@@ -31,8 +31,11 @@ def auto_send():
     pwd = getpass.getpass(prompt="Your password: ")
     while True:
         try:
+            rate = currency.get_rate()[0]
+            print(f"\nCurrent Exchange Rate: {from_currency} = {rate} {to_currency}")
             threshold = float(input(f"\nSend money when 1 {from_currency} moves bellow {c.get_symbol(to_currency)} "))
             break
+        
         except ValueError:
             print("Invalid Value!")
             
