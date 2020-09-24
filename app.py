@@ -73,11 +73,10 @@ while True:
 
 clear()
 
-print(f"EXCHANGE RATE TRACKER       TransferWise Mode: {auto_mode} (Threshold: {account.get_threshold()} {to_currency})\n")
+print("EXCHANGE RATE TRACKER       TransferWise Mode: {auto_mode} {threshold}".format(auto_mode= auto_mode, threshold= f"(Threshold: {account.get_threshold()} {to_currency})" if account != None else ""))
 
 while True:
     rate, fluctuation = currency.get_rate()
     
     print(f"\r1 {from_currency} = {rate} {to_currency}  ({fluctuation})", end="")
     # print(f"1 {from_currency} = {round(rate, 4)} {to_currency}")
-    sleep(3)
