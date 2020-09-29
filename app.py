@@ -5,7 +5,7 @@ from time import sleep
 from forex_python.converter import CurrencyCodes
 c = CurrencyCodes()
 
-from rateScrapper import *
+# from rateScrapper import *
 from transferwiseMode import *
 
 
