@@ -1,3 +1,7 @@
+# https://api-docs.transferwise.com/#transferwise-api
+# https://transferwise.com/help/articles/2958107/how-can-my-business-use-the-transferwise-api
+
+
 import requests
 from bs4 import BeautifulSoup
 import lxml

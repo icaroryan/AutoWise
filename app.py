@@ -9,6 +9,9 @@ from rateScrapper import *
 from transferwiseMode import *
 
 
+# https://api-docs.transferwise.com/#transferwise-api
+# https://transferwise.com/help/articles/2958107/how-can-my-business-use-the-transferwise-api
+
 # Clear the terminal
 def clear():
     # If windows
@@ -67,7 +70,7 @@ while True:
         auto_mode = True
         break
 
-    elif auto_false := re.findall("n|no", auto_prompt.lower()):
+    elif auto_false := re.findall("^n$|^no$", auto_prompt.lower()):
         break
 
     else:
