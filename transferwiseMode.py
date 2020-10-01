@@ -27,7 +27,7 @@ class TransferWise:
         headers = {"Authorization": f"Bearer {API_TOKEN}"}
 
         response = requests.get(url=TransferWise.url, headers=headers)
-        rate = "{:.4f}".format(response.json()[0]['rate'])
+        rate = format(response.json()[0]['rate'], '.4f')
 
         return rate
 

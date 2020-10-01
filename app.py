@@ -85,14 +85,17 @@ while True:
 
 clear()
 
-print("EXCHANGE RATE TRACKER       TransferWise Mode: {auto_mode} {threshold}       Refresh Rate: 1m".format(auto_mode= auto_mode, threshold= f"(Threshold: {currency.get_threshold()} {to_currency})" if auto_mode == True else ""))
+print("EXCHANGE RATE TRACKER       TransferWise Mode: {auto_mode}    {threshold}".format(auto_mode= auto_mode, threshold= f"(Threshold: {currency.get_threshold()} {to_currency})       Refresh Rate: 1m" if auto_mode else "       Refresh Rate: 30s"))
 
 
 while True:
     rate = currency.get_rate()
 
-    
-    timer = 10
+    if auto_mode:
+        timer = 60
+    else:
+        timer = 30
+
     for i in range(timer):
         remaining = str(timer - i)
         sys.stdout.write(f"\r1 {from_currency} = {rate[:]} {to_currency}       {remaining.zfill(2)}s")
