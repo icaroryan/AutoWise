@@ -8,7 +8,7 @@ load_dotenv()
 
 API_TOKEN = os.environ.get("API_TOKEN")
 
-class Currency:
+class TransferWise:
     # Class Variables
     url = None
 
@@ -16,7 +16,8 @@ class Currency:
         self.from_currency = from_currency
         self.to_currency = to_currency
 
-        Currency.url = f"https://api.transferwise.com/v1/rates?source={from_currency}&target={to_currency}"
+        # Currency.url = f"https://api.transferwise.com/v1/rates?source={from_currency}&target={to_currency}"
+        TransferWise.url = f"https://api.sandbox.transferwise.tech/v1/rates?source={from_currency}&target={to_currency}"
 
     # Tracker (GET_EXCHANGE_RATES) -> Create a function that gets the chosen exchange rates
     def get_rate(self):
@@ -25,39 +26,32 @@ class Currency:
         """
         headers = {"Authorization": f"Bearer {API_TOKEN}"}
 
-        response = requests.get(url=Currency.url, headers=headers)
-        print(response.json())
+        response = requests.get(url=TransferWise.url, headers=headers)
+        rate = "{:.4f}".format(response.json()[0]['rate'])
 
-        return None
-
-
-from_currency = "cad"
-from_currency = from_currency.upper()
-
-to_currency = "brl"
-to_currency = to_currency.upper()
-
-
-currency = Currency(from_currency, to_currency)
-
-currency.get_rate()
-
-
-
-
-class TransferWise:
-    def __init__ (self, email, pwd, threshold):
-        self.email = email
-        self.pwd = pwd
-        self.threshold = threshold
+        return rate
 
     
-    def get_rate(self):
-        headers = {}
-        # url = https://api.sandbox.transferwise.tech/v1/rates?source=EUR&target=USD
+    def set_threshold(self, threshold):
+        self.threshold = threshold
+
 
     def get_threshold(self):
         return self.threshold
-    
+
+
     def send_money(self):
         pass
+
+
+
+# from_currency = "cad"
+# from_currency = from_currency.upper()
+
+# to_currency = "brl"
+# to_currency = to_currency.upper()
+
+
+# currency = TransferWise(from_currency, to_currency)
+
+# print(currency.get_rate())

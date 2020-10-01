@@ -1,11 +1,12 @@
 import re, getpass
 from os import system, name 
 from time import sleep
+import sys
 
 from forex_python.converter import CurrencyCodes
 c = CurrencyCodes()
 
-# from rateScrapper import *
+from rateScrapper import *
 from transferwiseMode import *
 
 
@@ -21,29 +22,32 @@ def clear():
     else:
         system('clear')
 
-account = None
+currency = None
 
 def auto_send():
-    print(f"Activating TransferWise MODE\n")
+    print(f"Activating TransferWise MODE...\n")
     print(f"\nDon't worry, only you will have access to these information!\n")
 
 
     # Prompt for the transferwise email
-    email = input("Your email address: ")
-    # Prompt for the transferwise password (don't save this in a raw form, rather, encrypted way)
-    pwd = getpass.getpass(prompt="Your password: ")
+    token = input("Your API Token: ")
+    clear()
+
+    global currency
+    currency = TransferWise(from_currency, to_currency)
+
     while True:
         try:
-            rate = currency.get_rate()[0]
-            print(f"\nCurrent Exchange Rate: {from_currency} = {rate} {to_currency}")
+            rate = currency.get_rate()
+            print(f"Current Exchange Rate: {from_currency} = {rate} {to_currency}")
             threshold = float(input(f"\nSend money when 1 {from_currency} moves bellow {c.get_symbol(to_currency)} "))
             break
         
         except ValueError:
             print("Invalid Value!")
             
-    global account
-    account = TransferWise(email, pwd, threshold)
+
+    currency.set_threshold(threshold)
 
 
 
@@ -55,7 +59,7 @@ to_currency = input(f"What Currency you want to convert TO? (ex: CAD) ")
 to_currency = to_currency.upper()
 
 # Creating Currency
-currency = Currency(from_currency, to_currency)
+
 
 
 while True:
@@ -71,6 +75,7 @@ while True:
         break
 
     elif auto_false := re.findall("^n$|^no$", auto_prompt.lower()):
+        currency = No_TransferWise(from_currency, to_currency)
         break
 
     else:
@@ -79,10 +84,16 @@ while True:
 
 clear()
 
-print("EXCHANGE RATE TRACKER       TransferWise Mode: {auto_mode} {threshold}".format(auto_mode= auto_mode, threshold= f"(Threshold: {account.get_threshold()} {to_currency})" if account != None else ""))
+print("EXCHANGE RATE TRACKER       TransferWise Mode: {auto_mode} {threshold}       Refresh Rate: 1m".format(auto_mode= auto_mode, threshold= f"(Threshold: {currency.get_threshold()} {to_currency})" if auto_mode == True else ""))
+
 
 while True:
-    rate, fluctuation = currency.get_rate()
+    rate = currency.get_rate()
     
-    print(f"\r1 {from_currency} = {rate} {to_currency}  ({fluctuation})", end="")
-    # print(f"1 {from_currency} = {round(rate, 4)} {to_currency}")
+    print(f"\r1 {from_currency} = {rate} {to_currency}", end="")
+    
+    timer = 60
+    for i in range(timer):
+        sys.stdout.write(f"       {timer - i}s")
+        sys.stdout.flush()
+        sleep(1)
