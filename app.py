@@ -41,6 +41,7 @@ def auto_send():
             rate = currency.get_rate()
             print(f"Current Exchange Rate: {from_currency} = {rate} {to_currency}")
             threshold = float(input(f"\nSend money when 1 {from_currency} moves bellow {c.get_symbol(to_currency)} "))
+            threshold = format(threshold, ".4f")
             break
         
         except ValueError:
@@ -89,11 +90,11 @@ print("EXCHANGE RATE TRACKER       TransferWise Mode: {auto_mode} {threshold}   
 
 while True:
     rate = currency.get_rate()
+
     
-    print(f"\r1 {from_currency} = {rate} {to_currency}", end="")
-    
-    timer = 60
+    timer = 10
     for i in range(timer):
-        sys.stdout.write(f"       {timer - i}s")
+        remaining = str(timer - i)
+        sys.stdout.write(f"\r1 {from_currency} = {rate[:]} {to_currency}       {remaining.zfill(2)}s")
         sys.stdout.flush()
         sleep(1)
