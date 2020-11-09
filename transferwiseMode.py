@@ -1,6 +1,9 @@
 # https://api-docs.transferwise.com/#transferwise-api
 # https://transferwise.com/help/articles/2958107/how-can-my-business-use-the-transferwise-api
 
+
+# email: yurdemiydi@nedoz.com
+
 from dotenv import load_dotenv
 import os, requests
 
@@ -42,16 +45,3 @@ class TransferWise:
 
     def send_money(self):
         pass
-
-
-
-# from_currency = "cad"
-# from_currency = from_currency.upper()
-
-# to_currency = "brl"
-# to_currency = to_currency.upper()
-
-
-# currency = TransferWise(from_currency, to_currency)
-
-# print(currency.get_rate())

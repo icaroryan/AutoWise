@@ -10,9 +10,6 @@ from rateScrapper import *
 from transferwiseMode import *
 
 
-# https://api-docs.transferwise.com/#transferwise-api
-# https://transferwise.com/help/articles/2958107/how-can-my-business-use-the-transferwise-api
-
 # Clear the terminal
 def clear():
     # If windows
@@ -30,7 +27,7 @@ def auto_send():
 
 
     # Prompt for the transferwise email
-    token = input("Your API Token: ")
+    # token = input("Your API Token: ")
     clear()
 
     global currency
@@ -62,12 +59,11 @@ to_currency = to_currency.upper()
 # Creating Currency
 
 
-
 while True:
     auto_mode = False
 
     # Ask if the user wants the automatic money sender turned ON (transfer wise)
-    auto_prompt = input(f"\nDo you want us to automatically open a transaction when the Exchange Rate reach your threshold? ([Y]es or [N]o) ")
+    auto_prompt = input(f"\nDo you want us to automatically open a transaction when the Exchange Rate reach your threshold? ([Y]es / [N]o) ")
 
     if auto_true := re.findall("^y$|^yes$", auto_prompt.lower()):
         clear()
@@ -85,11 +81,20 @@ while True:
 
 clear()
 
-print("EXCHANGE RATE TRACKER       TransferWise Mode: {auto_mode}    {threshold}".format(auto_mode= auto_mode, threshold= f"(Threshold: {currency.get_threshold()} {to_currency})       Refresh Rate: 1m" if auto_mode else "       Refresh Rate: 30s"))
+threshold = currency.get_threshold()
+
+print("EXCHANGE RATE TRACKER       TransferWise Mode: {auto_mode}    {threshold}".format(auto_mode= auto_mode, threshold= f"(Threshold: {threshold} {to_currency})       Refresh Rate: 1m" if auto_mode else "       Refresh Rate: 30s"))
+
+threshold = float(threshold)
 
 
 while True:
     rate = currency.get_rate()
+    rate_f = float(rate)
+
+    if rate_f <= threshold:
+        print("Threshold reached!! Sending money...")
+        input()
 
     if auto_mode:
         timer = 60
