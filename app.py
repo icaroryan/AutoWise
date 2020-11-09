@@ -94,7 +94,8 @@ while True:
 
     if rate_f <= threshold:
         print("Threshold reached!! Sending money...")
-        input()
+        currency.send_money()
+        
 
     if auto_mode:
         timer = 60
