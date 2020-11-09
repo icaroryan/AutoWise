@@ -39,14 +39,25 @@ def auto_send():
             print(f"Current Exchange Rate: {from_currency} = {rate} {to_currency}")
             threshold = float(input(f"\nSend money when 1 {from_currency} moves bellow {c.get_symbol(to_currency)} "))
             threshold = format(threshold, ".4f")
+
+
+            recipients = currency.get_recipients()        
+            print(f"\n\n---Recipient Accounts---\n")
+            for i, recipient in enumerate(recipients):
+                print(f"{i + 1}: {recipient['accountHolderName']} ({recipient['country']}/{recipient['currency']}) > Transit & Account Number: {recipient['details']['transitNumber']} - {recipient['details']['accountNumber']}  | Account Type: {recipient['details']['accountType']}")
+            option = int(input(f"\nEnter the recipient you want to send money: "))
+            recipient_target = option - 1
+            currency.set_recipient(recipient_target)
+
+
             break
         
-        except ValueError:
-            print("Invalid Value!")
+        except Exception as e:
+            print(e)
+        
             
 
     currency.set_threshold(threshold)
-
 
 
 # Prompt the user for the Currencies
@@ -95,7 +106,7 @@ while True:
     if rate_f <= threshold:
         print("Threshold reached!! Sending money...")
         currency.send_money()
-        
+
 
     if auto_mode:
         timer = 60
