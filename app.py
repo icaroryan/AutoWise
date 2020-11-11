@@ -43,6 +43,9 @@ def auto_send():
             print(f"Current Exchange Rate: 1 {to_currency} = {rate} {from_currency}")
 
             amount = float(input("How much money you want to send? (without commas, ex. 12000) "))
+            # targetAmount
+            # sourceAmount
+
             currency.set_amount(amount)
             
             threshold = float(input(f"\nSend money when 1 {to_currency} moves bellow {c.get_symbol(from_currency)} "))
@@ -51,17 +54,15 @@ def auto_send():
 
 
             recipients = currency.get_recipients()     
-            if len(recipients) < 1:
-                print("You've got no recipient in your account. Add one and try again.")
-                return False
+            # if len(recipients) < 1:
+            #     print("You've got no recipient in your account. Add one and try again.")
+            #     return False
             print(f"\n\n---Recipient Accounts---\n")
             for i, recipient in enumerate(recipients):
                 print(f"{i + 1}: {recipient['accountHolderName']} ({recipient['country']}/{recipient['currency']}) > Transit & Account Number: {recipient['details']['transitNumber']} - {recipient['details']['accountNumber']}  | Account Type: {recipient['details']['accountType']}")
             option = int(input(f"\nEnter the recipient you want to send money: "))
             recipient_target = option - 1
             currency.set_recipient(recipient_target)
-            
-            break
         
         except Exception as e:
             print(e)
@@ -118,12 +119,11 @@ while True:
     rate_f = float(rate)
 
     if auto_mode and (rate_f <= threshold):
-        print("Threshold reached!! Sending money...")
+        print("\rThreshold reached!! Sending money...")
+        currency.quote()
         currency.send_money()
 
         break
-
-
 
 
     if auto_mode:
@@ -136,3 +136,4 @@ while True:
         sys.stdout.write(f"\r1 {to_currency} = {rate[:]} {from_currency}       {remaining.zfill(2)}s")
         sys.stdout.flush()
         sleep(1)
+    

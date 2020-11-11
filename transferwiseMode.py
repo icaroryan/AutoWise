@@ -6,6 +6,7 @@
 
 from dotenv import load_dotenv
 import os, requests
+from datetime import datetime
 
 load_dotenv()
 
@@ -24,13 +25,13 @@ class TransferWise:
         """
         Output: Rate
         """
-        url = f"https://api.transferwise.com/v1/rates?source={self.to_currency}&target={self.from_currency}"
-        # url = f"https://api.sandbox.transferwise.tech/v1/rates?source={self.from_currency}&target={self.to_currency}"
+        url = f"https://api.sandbox.transferwise.tech/v1/rates?source={self.to_currency}&target={self.from_currency}"
+        # url = f"https://api.transferwise.com/v1/rates?source={self.to_currency}&target={self.from_currency}"
 
         headers = {"Authorization": f"Bearer {API_TOKEN}"}
 
         response = requests.get(url=url, headers=headers)
-        if response.status_code == 401:
+        if response.status_code >= 400 and response.status_code <= 499:
             exit(response.text)
         rate = format(response.json()[0]['rate'], '.4f')
 
@@ -49,13 +50,13 @@ class TransferWise:
 
     
     def get_profile_id(self):
-        # url = f"https://api.sandbox.transferwise.tech/v1/profiles"
-        url = f"https://api.transferwise.com/v1/profiles"
+        url = f"https://api.sandbox.transferwise.tech/v1/profiles"
+        # url = f"https://api.transferwise.com/v1/profiles"
         headers = {"Authorization": f"Bearer {API_TOKEN}"}
 
         print("Getting your profile ID..")
         response = requests.get(url=url, headers=headers)
-        if response.status_code == 401:
+        if response.status_code >= 400 and response.status_code <= 499:
             exit(response.text)
 
         profile_n = 0
@@ -70,7 +71,8 @@ class TransferWise:
                     print(f"{i + 1}: {profile['details']['name']} > Type: {profile['type']} (ID: {profile['id']})")
 
 
-            option = int(input("\nWe noticed you have more than one profile in your account. Enter the profile number you want to send money from: "))
+            option = int(input("\nWe noticed you have more than one profile in your account. \nEnter the profile number you want to send money from: "))
+            print()
             profile_n = option - 1
 
         return response_json[profile_n]["id"]
@@ -80,27 +82,45 @@ class TransferWise:
 
 
     def quote(self):
-        # url = f"https://api.sandbox.transferwise.tech/v1/quotes"
-        url = f"https://api.transferwise.com/v1/quotes"
+        url = f"https://api.sandbox.transferwise.tech/v1/quotes"
+        # url = f"https://api.transferwise.com/v1/quotes"
         headers = {"Authorization": f"Bearer {API_TOKEN}", "Content-Type": "application/json"}
-        data = {"profile": self.profile_id, "source": self.from_currency, "target": self.to_currency, "rateType": "FIXED", "targetAmount": self.amount, "type": "BALANCE_PAYOUT"}
+        data = {"profile": self.profile_id, 
+            "source": self.from_currency, 
+            "target": self.to_currency, 
+            "rateType": "FIXED", 
+            "sourceAmount": self.amount, 
+            "type": "BALANCE_PAYOUT"
+            }
 
-        response = requests.get(url=url, headers=headers, data=data)
-        if response.status_code == 401:
+        response = requests.post(url=url, headers=headers, json=data)
+        if response.status_code >= 400 and response.status_code <= 499:
             exit(response.text)
 
         response_json = response.json()
 
-        print(response_json)
+        sourceAmount = response_json['sourceAmount']
+        targetAmount = response_json['targetAmount']
+        fee = response_json['fee']
+        commercial_rate = format((sourceAmount - fee) / targetAmount, '.4f')
+        vet = format(sourceAmount / targetAmount, '.4f')
+
+        createdTime = response_json['createdTime']
+        objDate = datetime.strptime(createdTime, "%Y-%m-%dT%H:%M:%S.%f%z")
+        createdTime = objDate.strftime("%B %d, %Y %H:%M:%S")
+        
+
+        print(f"\nYou send {self.from_currency} {sourceAmount} >> Recipient gets {self.to_currency} {targetAmount}\nCommercial rate: {commercial_rate}   ||   That's 1 {self.to_currency} = {vet} {self.from_currency}  ({createdTime})")
         
 
     def get_recipients(self):
-        url = f"https://api.transferwise.com/v1/accounts?currency={self.from_currency}"
+        url = f"https://api.sandbox.transferwise.tech/v1/accounts?currency={self.from_currency}"
+        # url = f"https://api.transferwise.com/v1/accounts?currency={self.from_currency}"
 
         headers = {"Authorization": f"Bearer {API_TOKEN}"}
 
         response = requests.get(url=url, headers=headers)
-        if response.status_code == 401:
+        if response.status_code >= 400 and response.status_code <= 499:
             exit(response.text)
 
         return response.json()
