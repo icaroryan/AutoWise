@@ -99,6 +99,8 @@ class TransferWise:
 
         response_json = response.json()
 
+        self.quote_id = response_json['id']
+
         sourceAmount = response_json['sourceAmount']
         targetAmount = response_json['targetAmount']
         fee = response_json['fee']
