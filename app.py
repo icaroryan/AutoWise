@@ -33,12 +33,18 @@ def auto_send():
     global currency
     currency = TransferWise(from_currency, to_currency)
 
+    currency.get_profile_id()
     while True:
         try:
             rate = currency.get_rate()
             print(f"Current Exchange Rate: {from_currency} = {rate} {to_currency}")
+
+            amount = input("How much money you want to send? (without commas, ex. 12000) ")
+            currency.set_amount(amount)
+            
             threshold = float(input(f"\nSend money when 1 {from_currency} moves bellow {c.get_symbol(to_currency)} "))
             threshold = format(threshold, ".4f")
+            currency.set_threshold(threshold)
 
 
             recipients = currency.get_recipients()        
@@ -48,16 +54,13 @@ def auto_send():
             option = int(input(f"\nEnter the recipient you want to send money: "))
             recipient_target = option - 1
             currency.set_recipient(recipient_target)
-
-
+            
             break
         
         except Exception as e:
             print(e)
         
-            
-
-    currency.set_threshold(threshold)
+    
 
 
 # Prompt the user for the Currencies
@@ -106,6 +109,10 @@ while True:
     if rate_f <= threshold:
         print("Threshold reached!! Sending money...")
         currency.send_money()
+
+        break
+
+
 
 
     if auto_mode:
