@@ -33,21 +33,27 @@ def auto_send():
     global currency
     currency = TransferWise(from_currency, to_currency)
 
-    currency.get_profile_id()
     while True:
         try:
-            rate = currency.get_rate()
-            print(f"Current Exchange Rate: {from_currency} = {rate} {to_currency}")
 
-            amount = input("How much money you want to send? (without commas, ex. 12000) ")
+            profile_id = currency.get_profile_id()
+            currency.set_profile_id(profile_id)
+
+            rate = currency.get_rate()
+            print(f"Current Exchange Rate: 1 {to_currency} = {rate} {from_currency}")
+
+            amount = float(input("How much money you want to send? (without commas, ex. 12000) "))
             currency.set_amount(amount)
             
-            threshold = float(input(f"\nSend money when 1 {from_currency} moves bellow {c.get_symbol(to_currency)} "))
+            threshold = float(input(f"\nSend money when 1 {to_currency} moves bellow {c.get_symbol(from_currency)} "))
             threshold = format(threshold, ".4f")
             currency.set_threshold(threshold)
 
 
-            recipients = currency.get_recipients()        
+            recipients = currency.get_recipients()     
+            if len(recipients) < 1:
+                print("You've got no recipient in your account. Add one and try again.")
+                return False
             print(f"\n\n---Recipient Accounts---\n")
             for i, recipient in enumerate(recipients):
                 print(f"{i + 1}: {recipient['accountHolderName']} ({recipient['country']}/{recipient['currency']}) > Transit & Account Number: {recipient['details']['transitNumber']} - {recipient['details']['accountNumber']}  | Account Type: {recipient['details']['accountType']}")
@@ -59,16 +65,20 @@ def auto_send():
         
         except Exception as e:
             print(e)
+            return False
+        
+        else:
+            return True
         
     
 
 
 # Prompt the user for the Currencies
-from_currency = input(f"\nWhat Currency you want to convert FROM? (ex: USD) ")
-from_currency = from_currency.upper()
-
-to_currency = input(f"What Currency you want to convert TO? (ex: CAD) ")
+to_currency = input(f"\nWhat Currency you want to convert FROM [Target(receive) currency code]? (ex: USD) ")
 to_currency = to_currency.upper()
+
+from_currency = input(f"What Currency you want to convert TO [Source(send) currency code]? (ex: CAD) ")
+from_currency = from_currency.upper()
 
 # Creating Currency
 
@@ -81,12 +91,11 @@ while True:
 
     if auto_true := re.findall("^y$|^yes$", auto_prompt.lower()):
         clear()
-        auto_send()
-        auto_mode = True
+        auto_mode = auto_send()
         break
 
     elif auto_false := re.findall("^n$|^no$", auto_prompt.lower()):
-        currency = No_TransferWise(from_currency, to_currency)
+        currency = No_TransferWise(to_currency, from_currency)
         break
 
     else:
@@ -95,18 +104,20 @@ while True:
 
 clear()
 
-threshold = currency.get_threshold()
+if auto_mode:
+    threshold = currency.get_threshold()
 
-print("EXCHANGE RATE TRACKER       TransferWise Mode: {auto_mode}    {threshold}".format(auto_mode= auto_mode, threshold= f"(Threshold: {threshold} {to_currency})       Refresh Rate: 1m" if auto_mode else "       Refresh Rate: 30s"))
+print("EXCHANGE RATE TRACKER       TransferWise Mode: {auto_mode}    {threshold}".format(auto_mode= auto_mode, threshold= f"(Threshold: {threshold} {from_currency})       Refresh Rate: 1m" if auto_mode else "       Refresh Rate: 30s"))
 
-threshold = float(threshold)
+if auto_mode:
+    threshold = float(threshold)
 
 
 while True:
     rate = currency.get_rate()
     rate_f = float(rate)
 
-    if rate_f <= threshold:
+    if auto_mode and (rate_f <= threshold):
         print("Threshold reached!! Sending money...")
         currency.send_money()
 
@@ -122,6 +133,6 @@ while True:
 
     for i in range(timer):
         remaining = str(timer - i)
-        sys.stdout.write(f"\r1 {from_currency} = {rate[:]} {to_currency}       {remaining.zfill(2)}s")
+        sys.stdout.write(f"\r1 {to_currency} = {rate[:]} {from_currency}       {remaining.zfill(2)}s")
         sys.stdout.flush()
         sleep(1)

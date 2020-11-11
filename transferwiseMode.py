@@ -24,7 +24,7 @@ class TransferWise:
         """
         Output: Rate
         """
-        url = f"https://api.transferwise.com/v1/rates?source={self.from_currency}&target={self.to_currency}"
+        url = f"https://api.transferwise.com/v1/rates?source={self.to_currency}&target={self.from_currency}"
         # url = f"https://api.sandbox.transferwise.tech/v1/rates?source={self.from_currency}&target={self.to_currency}"
 
         headers = {"Authorization": f"Bearer {API_TOKEN}"}
@@ -75,9 +75,24 @@ class TransferWise:
 
         return response_json[profile_n]["id"]
 
+    def set_profile_id(self, profile_id):
+        self.profile_id = profile_id
+
 
     def quote(self):
-        pass
+        # url = f"https://api.sandbox.transferwise.tech/v1/quotes"
+        url = f"https://api.transferwise.com/v1/quotes"
+        headers = {"Authorization": f"Bearer {API_TOKEN}", "Content-Type": "application/json"}
+        data = {"profile": self.profile_id, "source": self.from_currency, "target": self.to_currency, "rateType": "FIXED", "targetAmount": self.amount, "type": "BALANCE_PAYOUT"}
+
+        response = requests.get(url=url, headers=headers, data=data)
+        if response.status_code == 401:
+            exit(response.text)
+
+        response_json = response.json()
+
+        print(response_json)
+        
 
     def get_recipients(self):
         url = f"https://api.transferwise.com/v1/accounts?currency={self.from_currency}"
