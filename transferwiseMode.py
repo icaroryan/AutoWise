@@ -105,8 +105,8 @@ class TransferWise:
         self.sourceAmount = response_json['sourceAmount']
         targetAmount = response_json['targetAmount']
         fee = response_json['fee']
-        commercial_rate = format((sourceAmount - fee) / targetAmount, '.4f')
-        vet = format(sourceAmount / targetAmount, '.4f')
+        commercial_rate = format((self.sourceAmount - fee) / targetAmount, '.4f')
+        vet = format(self.sourceAmount / targetAmount, '.4f')
 
         createdTime = response_json['createdTime']
         objDate = datetime.strptime(createdTime, "%Y-%m-%dT%H:%M:%S.%f%z")
@@ -155,12 +155,12 @@ class TransferWise:
         rate = response_json["rate"]
         # source_value = response_json["sourceValue"]
         source_Currency = response_json["sourceCurrency"]
-        target_value =  round(source_value * rate, 2)
+        target_value =  round(self.source_value * rate, 2)
         # target_value =  format(source_value * rate, '.2f')
         target_Currency = response_json["targetCurrency"]
 
 
-        print(f"\nTransfer created successfully! {target_value} {target_Currency}   ({self.sourceAmount} {source_Currency})     [{created_date}]")
+        print(f"\nTransfer created successfully! \033[1;32;40m{target_value} {target_Currency}   \033[0;37;40m({self.sourceAmount} {source_Currency})     [{created_date}]")
 
     def send_money(self):
         self.quote()

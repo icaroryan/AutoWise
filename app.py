@@ -132,7 +132,7 @@ while True:
 
     for i in range(timer):
         remaining = str(timer - i)
-        sys.stdout.write(f"\r1 {to_currency} = {rate} {from_currency}       {remaining.zfill(2)}s")
+        sys.stdout.write(f"\r\033[1;32;40m1 {to_currency} = {rate} {from_currency}       \033[0;37;40m{remaining.zfill(2)}s")
         sys.stdout.flush()
         sleep(1)
 
