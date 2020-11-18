@@ -6,6 +6,7 @@
 
 from dotenv import load_dotenv
 import os, requests
+from bs4 import BeautifulSoup
 from datetime import datetime
 import uuid
 
@@ -23,6 +24,34 @@ class TransferWise:
 
     # Tracker (GET_EXCHANGE_RATES) -> Create a function that gets the chosen exchange rates
     def get_rate(self):
+        url = f"https://transferwise.com/gb/currency-converter/{self.to_currency}-to-{self.from_currency}-rate"
+
+        resp = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
+        soup = BeautifulSoup(resp.text, 'lxml')
+        span = soup.body.find("span", attrs={"class": "text-success"})
+        
+        # rate = div.select_one(".inlineblock.arial_26").get_text()
+        rate = float(span.get_text())
+        # fluctuation = div.select_one(".parentheses.arial_20").get_text()
+
+        rate = round(rate, 4)
+
+        return rate
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         """
         Output: Rate
         """
@@ -101,7 +130,7 @@ class TransferWise:
 
         self.quote_id = response_json['id']
 
-        sourceAmount = response_json['sourceAmount']
+        self.sourceAmount = response_json['sourceAmount']
         targetAmount = response_json['targetAmount']
         fee = response_json['fee']
         commercial_rate = format((sourceAmount - fee) / targetAmount, '.4f')
@@ -113,7 +142,7 @@ class TransferWise:
 
         
 
-        print(f"\nYou send {sourceAmount} {self.from_currency} >> Recipient gets {targetAmount} {self.to_currency}\nCommercial rate: {commercial_rate}   ||   That's 1 {self.to_currency} = {vet} {self.from_currency} Effective Rate (VET)")
+        print(f"\nYou send {self.sourceAmount} {self.from_currency} >> Recipient gets {targetAmount} {self.to_currency}\nCommercial rate: {commercial_rate}   ||   That's 1 {self.to_currency} = {vet} {self.from_currency} Effective Rate (VET)")
         
 
     def get_recipients(self):
@@ -152,14 +181,14 @@ class TransferWise:
 
         created_date = response_json["created"]
         rate = response_json["rate"]
-        source_value = response_json["sourceValue"]
+        # source_value = response_json["sourceValue"]
         source_Currency = response_json["sourceCurrency"]
         target_value =  round(source_value * rate, 2)
         # target_value =  format(source_value * rate, '.2f')
         target_Currency = response_json["targetCurrency"]
 
 
-        print(f"\nTransfer created successfully! {target_value} {target_Currency}   ({source_value} {source_Currency})     [{created_date}]")
+        print(f"\nTransfer created successfully! {target_value} {target_Currency}   ({self.sourceAmount} {source_Currency})     [{created_date}]")
 
     def send_money(self):
         self.quote()

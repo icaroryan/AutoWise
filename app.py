@@ -1,15 +1,27 @@
-import re, getpass
+import re
 from os import system, name 
 from time import sleep
 import sys
 
+
 from forex_python.converter import CurrencyCodes
 c = CurrencyCodes()
 
-from rateScrapper import *
+# from rateScrapper import *
 from transferwiseMode import *
 
-
+def beep():
+    duration = 250  # milliseconds
+    freq = 700  # Hz
+    for i in range(2):
+        if name == "nt":
+            import winsound
+            winsound.Beep(freq, duration)
+        # If mac
+        else:
+            os.system('play -nq -t alsa synth {} sine {}'.format(duration, freq))
+    
+        
 # Clear the terminal
 def clear():
     # If windows
@@ -30,8 +42,6 @@ def auto_send():
     # token = input("Your API Token: ")
     clear()
 
-    global currency
-    currency = TransferWise(from_currency, to_currency)
 
     while True:
         try:
@@ -42,7 +52,7 @@ def auto_send():
             rate = currency.get_rate()
             print(f"Current Exchange Rate: 1 {to_currency} = {rate} {from_currency}")
 
-            amount = float(input("How much money you want to send? (without commas, ex. 12000) "))
+            amount = float(input(f"How much {from_currency} you want to send? (without commas, ex. 12000) "))
             # targetAmount
             # sourceAmount
 
@@ -92,13 +102,14 @@ while True:
     # Ask if the user wants the automatic money sender turned ON (transfer wise)
     auto_prompt = input(f"\nDo you want us to automatically open a transaction when the Exchange Rate reach your threshold? ([Y]es / [N]o) ")
 
+    currency = TransferWise(from_currency, to_currency)
+
     if auto_true := re.findall("^y$|^yes$", auto_prompt.lower()):
         clear()
         auto_mode = auto_send()
         break
 
     elif auto_false := re.findall("^n$|^no$", auto_prompt.lower()):
-        currency = No_TransferWise(to_currency, from_currency)
         break
 
     else:
@@ -110,7 +121,7 @@ clear()
 if auto_mode:
     threshold = currency.get_threshold()
 
-print("EXCHANGE RATE TRACKER       TransferWise Mode: {auto_mode}    {threshold}".format(auto_mode= auto_mode, threshold= f"(Threshold: {threshold} {from_currency})       Refresh Rate: 1m" if auto_mode else "       Refresh Rate: 30s"))
+print("EXCHANGE RATE TRACKER       TransferWise Mode: {auto_mode}    {threshold}       Refresh Rate: 1m".format(auto_mode= auto_mode, threshold= f"(Threshold: {threshold} {from_currency})"if auto_mode else ""))
 
 if auto_mode:
     threshold = float(threshold)
@@ -124,18 +135,16 @@ while True:
     if auto_mode and (rate_f <= threshold):
         print("\rThreshold reached!! Sending money...")
         currency.send_money()
-
         break
 
-
-    if auto_mode:
-        timer = 60
-    else:
-        timer = 30
+    timer = 60
 
     for i in range(timer):
         remaining = str(timer - i)
-        sys.stdout.write(f"\r1 {to_currency} = {rate[:]} {from_currency}       {remaining.zfill(2)}s")
+        sys.stdout.write(f"\r1 {to_currency} = {rate} {from_currency}       {remaining.zfill(2)}s")
         sys.stdout.flush()
         sleep(1)
+
+
+input("Press ENTER to exit")
     
