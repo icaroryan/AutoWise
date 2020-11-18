@@ -2,6 +2,7 @@ import re
 from os import system, name 
 from time import sleep
 import sys
+import beepy
 
 
 from forex_python.converter import CurrencyCodes
@@ -10,18 +11,7 @@ c = CurrencyCodes()
 # from rateScrapper import *
 from transferwiseMode import *
 
-def beep():
-    duration = 250  # milliseconds
-    freq = 700  # Hz
-    for i in range(2):
-        if name == "nt":
-            import winsound
-            winsound.Beep(freq, duration)
-        # If mac
-        else:
-            os.system('play -nq -t alsa synth {} sine {}'.format(duration, freq))
-    
-        
+
 # Clear the terminal
 def clear():
     # If windows
@@ -134,6 +124,7 @@ while True:
 
     if auto_mode and (rate_f <= threshold):
         print("\rThreshold reached!! Sending money...")
+        beepy.beep(sound='ping')
         currency.send_money()
         break
 

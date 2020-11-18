@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import uuid
 
+
 load_dotenv()
 
 API_TOKEN = os.environ.get("API_TOKEN")
@@ -35,35 +36,6 @@ class TransferWise:
         # fluctuation = div.select_one(".parentheses.arial_20").get_text()
 
         rate = round(rate, 4)
-
-        return rate
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        """
-        Output: Rate
-        """
-        # url = f"https://api.sandbox.transferwise.tech/v1/rates?source={self.to_currency}&target={self.from_currency}"
-        url = f"https://api.transferwise.com/v1/rates?source={self.to_currency}&target={self.from_currency}"
-
-        headers = {"Authorization": f"Bearer {API_TOKEN}"}
-
-        response = requests.get(url=url, headers=headers)
-        if response.status_code >= 400 and response.status_code <= 499:
-            exit(response.text)
-        rate = format(response.json()[0]['rate'], '.4f')
 
         return rate
 
