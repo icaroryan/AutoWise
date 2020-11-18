@@ -53,16 +53,18 @@ def auto_send():
             currency.set_threshold(threshold)
 
 
-            recipients = currency.get_recipients()     
-            # if len(recipients) < 1:
-            #     print("You've got no recipient in your account. Add one and try again.")
-            #     return False
+            recipients = currency.get_recipients()    
+
+            if len(recipients) < 1:
+                print("You've got no recipient in your account. Add one and try again.")
+                return False
+
             print(f"\n\n---Recipient Accounts---\n")
             for i, recipient in enumerate(recipients):
                 print(f"{i + 1}: {recipient['accountHolderName']} ({recipient['country']}/{recipient['currency']}) > Transit & Account Number: {recipient['details']['transitNumber']} - {recipient['details']['accountNumber']}  | Account Type: {recipient['details']['accountType']}")
             option = int(input(f"\nEnter the recipient you want to send money: "))
             recipient_target = option - 1
-            currency.set_recipient(recipient_target)
+            currency.set_recipient(recipients[recipient_target])
         
         except Exception as e:
             print(e)
@@ -118,9 +120,9 @@ while True:
     rate = currency.get_rate()
     rate_f = float(rate)
 
+
     if auto_mode and (rate_f <= threshold):
         print("\rThreshold reached!! Sending money...")
-        currency.quote()
         currency.send_money()
 
         break

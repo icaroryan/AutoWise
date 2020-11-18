@@ -26,8 +26,8 @@ class TransferWise:
         """
         Output: Rate
         """
-        url = f"https://api.sandbox.transferwise.tech/v1/rates?source={self.to_currency}&target={self.from_currency}"
-        # url = f"https://api.transferwise.com/v1/rates?source={self.to_currency}&target={self.from_currency}"
+        # url = f"https://api.sandbox.transferwise.tech/v1/rates?source={self.to_currency}&target={self.from_currency}"
+        url = f"https://api.transferwise.com/v1/rates?source={self.to_currency}&target={self.from_currency}"
 
         headers = {"Authorization": f"Bearer {API_TOKEN}"}
 
@@ -51,11 +51,10 @@ class TransferWise:
 
     
     def get_profile_id(self):
-        url = f"https://api.sandbox.transferwise.tech/v1/profiles"
-        # url = f"https://api.transferwise.com/v1/profiles"
+        # url = f"https://api.sandbox.transferwise.tech/v1/profiles"
+        url = f"https://api.transferwise.com/v1/profiles"
         headers = {"Authorization": f"Bearer {API_TOKEN}"}
 
-        print("Getting your profile ID..")
         response = requests.get(url=url, headers=headers)
         if response.status_code >= 400 and response.status_code <= 499:
             exit(response.text)
@@ -83,8 +82,8 @@ class TransferWise:
 
 
     def quote(self):
-        url = f"https://api.sandbox.transferwise.tech/v1/quotes"
-        # url = f"https://api.transferwise.com/v1/quotes"
+        # url = f"https://api.sandbox.transferwise.tech/v1/quotes"
+        url = f"https://api.transferwise.com/v1/quotes"
         headers = {"Authorization": f"Bearer {API_TOKEN}", "Content-Type": "application/json"}
         data = {"profile": self.profile_id, 
             "source": self.from_currency, 
@@ -114,12 +113,12 @@ class TransferWise:
 
         
 
-        print(f"\nYou send {self.from_currency} {sourceAmount} >> Recipient gets {self.to_currency} {targetAmount}\nCommercial rate: {commercial_rate}   ||   That's 1 {self.to_currency} = {vet} {self.from_currency}  ({createdTime})")
+        print(f"\nYou send {sourceAmount} {self.from_currency} >> Recipient gets {targetAmount} {self.to_currency}\nCommercial rate: {commercial_rate}   ||   That's 1 {self.to_currency} = {vet} {self.from_currency} Effective Rate (VET)")
         
 
     def get_recipients(self):
-        url = f"https://api.sandbox.transferwise.tech/v1/accounts?currency={self.from_currency}"
-        # url = f"https://api.transferwise.com/v1/accounts?currency={self.from_currency}"
+        # url = f"https://api.sandbox.transferwise.tech/v1/accounts?currency={self.from_currency}"
+        url = f"https://api.transferwise.com/v1/accounts?currency={self.to_currency}"
 
         headers = {"Authorization": f"Bearer {API_TOKEN}"}
 
@@ -135,8 +134,8 @@ class TransferWise:
 
     
     def create_transfer(self):
-        url = f"https://api.sandbox.transferwise.tech/v1/transfers"
-        # url = f"https://api.transferwise.com/v1/transfers"
+        # url = f"https://api.sandbox.transferwise.tech/v1/transfers"
+        url = f"https://api.transferwise.com/v1/transfers"
 
         headers = {"Authorization": f"Bearer {API_TOKEN}", "Content-Type": "application/json"}
         data = {
@@ -152,13 +151,16 @@ class TransferWise:
         response_json = response.json()
 
         created_date = response_json["created"]
-        target_value = response_json["targetValue"]
-        target_Currency = response_json["targetCurrency"]
+        rate = response_json["rate"]
         source_value = response_json["sourceValue"]
         source_Currency = response_json["sourceCurrency"]
+        target_value =  round(source_value * rate, 2)
+        # target_value =  format(source_value * rate, '.2f')
+        target_Currency = response_json["targetCurrency"]
 
 
-        print(f"\nTransfer created successfully ({created_date})! {target_value} {target_Currency}   ({source_value} {source_Currency})")
+        print(f"\nTransfer created successfully! {target_value} {target_Currency}   ({source_value} {source_Currency})     [{created_date}]")
 
     def send_money(self):
-        pass
+        self.quote()
+        self.create_transfer()
