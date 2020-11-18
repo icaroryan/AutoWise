@@ -1,5 +1,5 @@
 # https://api-docs.transferwise.com/#transferwise-api
-# https://transferwise.com/help/articles/2958107/how-can-my-business-use-the-transferwise-api
+# https://github.com/tedchou12/transferwise/blob/a83d826ec943d082e666e02683c90cd760bc94f8/tw_api.py
 
 
 # email: yurdemiydi@nedoz.com
@@ -7,6 +7,7 @@
 from dotenv import load_dotenv
 import os, requests
 from datetime import datetime
+import uuid
 
 load_dotenv()
 
@@ -110,6 +111,7 @@ class TransferWise:
         createdTime = response_json['createdTime']
         objDate = datetime.strptime(createdTime, "%Y-%m-%dT%H:%M:%S.%f%z")
         createdTime = objDate.strftime("%B %d, %Y %H:%M:%S")
+
         
 
         print(f"\nYou send {self.from_currency} {sourceAmount} >> Recipient gets {self.to_currency} {targetAmount}\nCommercial rate: {commercial_rate}   ||   That's 1 {self.to_currency} = {vet} {self.from_currency}  ({createdTime})")
@@ -131,6 +133,32 @@ class TransferWise:
     def set_recipient(self, recipient):
         self.recipient = recipient
 
+    
+    def create_transfer(self):
+        url = f"https://api.sandbox.transferwise.tech/v1/transfers"
+        # url = f"https://api.transferwise.com/v1/transfers"
+
+        headers = {"Authorization": f"Bearer {API_TOKEN}", "Content-Type": "application/json"}
+        data = {
+            "targetAccount": self.recipient["id"],
+            "quote": self.quote_id,
+            "customerTransactionId": str(uuid.uuid4()),
+            "details": {
+                "reference": "Sent automatically by AutoWise"
+            }
+        }
+
+        response = requests.post(url=url, headers=headers, json=data)
+        response_json = response.json()
+
+        created_date = response_json["created"]
+        target_value = response_json["targetValue"]
+        target_Currency = response_json["targetCurrency"]
+        source_value = response_json["sourceValue"]
+        source_Currency = response_json["sourceCurrency"]
+
+
+        print(f"\nTransfer created successfully ({created_date})! {target_value} {target_Currency}   ({source_value} {source_Currency})")
 
     def send_money(self):
         pass
