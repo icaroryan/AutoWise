@@ -22,6 +22,9 @@ class TransferWise:
         self.from_currency = from_currency
         self.to_currency = to_currency
 
+        self.last_transfer = {}
+        self.thresholds = []
+
 
     # Tracker (GET_EXCHANGE_RATES) -> Create a function that gets the chosen exchange rates
     def get_rate(self):
@@ -48,14 +51,19 @@ class TransferWise:
 
     
     def set_threshold(self, threshold):
-        self.threshold = threshold
+        threshold = float(threshold)
+        # 0.5% more
+        upper_bound = round(threshold * 1.003, 4)
+        # 0.5% less
+        lower_bound = round(threshold * 0.995, 4)
+        self.thresholds.extend([upper_bound, threshold, lower_bound])
 
 
     def set_amount(self, amount):
         self.amount = amount
 
     def get_threshold(self):
-        return self.threshold
+        return self.thresholds
 
     
     def get_profile_id(self):
@@ -90,6 +98,7 @@ class TransferWise:
 
 
     def quote(self):
+
         # url = f"https://api.sandbox.transferwise.tech/v1/quotes"
         url = f"https://api.transferwise.com/v1/quotes"
         headers = {"Authorization": f"Bearer {API_TOKEN}", "Content-Type": "application/json"}
@@ -105,23 +114,30 @@ class TransferWise:
         if response.status_code >= 400 and response.status_code <= 499:
             exit(response.text)
 
-        response_json = response.json()
+        response = response.json()
+        ############
+        if self.last_transfer:
+            self.cancel_transfer()
 
-        self.quote_id = response_json['id']
+        self.quote_id = response['id']
 
-        self.sourceAmount = response_json['sourceAmount']
-        targetAmount = response_json['targetAmount']
-        fee = response_json['fee']
+        self.sourceAmount = response['sourceAmount']
+        targetAmount = response['targetAmount']
+        fee = response['fee']
+
         commercial_rate = format((self.sourceAmount - fee) / targetAmount, '.4f')
+        self.last_transfer["rate"] = commercial_rate
+
         vet = format(self.sourceAmount / targetAmount, '.4f')
 
-        createdTime = response_json['createdTime']
+        createdTime = response['createdTime']
         objDate = datetime.strptime(createdTime, "%Y-%m-%dT%H:%M:%S.%f%z")
         createdTime = objDate.strftime("%B %d, %Y %H:%M:%S")
 
         
-
         print(f"\nYou send {self.sourceAmount} {self.from_currency} >> Recipient gets {targetAmount} {self.to_currency}\nCommercial rate: {commercial_rate}   ||   That's 1 {self.to_currency} = {vet} {self.from_currency} Effective Rate (VET)")
+
+
         
 
     def get_recipients(self):
@@ -140,6 +156,8 @@ class TransferWise:
     def set_recipient(self, recipient):
         self.recipient = recipient
 
+    def get_recipient(self):
+        return self.recipient
     
     def create_transfer(self):
         # url = f"https://api.sandbox.transferwise.tech/v1/transfers"
@@ -155,20 +173,45 @@ class TransferWise:
             }
         }
 
-        response = requests.post(url=url, headers=headers, json=data)
-        response_json = response.json()
+        response = requests.post(url=url, headers=headers, json=data).json()
 
-        created_date = response_json["created"]
-        rate = response_json["rate"]
-        # source_value = response_json["sourceValue"]
-        source_Currency = response_json["sourceCurrency"]
-        target_value =  round(self.source_value * rate, 2)
+        self.last_transfer["id"] = response["id"]
+
+        created_date = response["created"]
+        rate = response["rate"]
+        # source_value = response["sourceValue"]
+        source_Currency = response["sourceCurrency"]
+        target_value =  round(self.sourceAmount * rate, 2)
         # target_value =  format(source_value * rate, '.2f')
-        target_Currency = response_json["targetCurrency"]
+        target_Currency = response["targetCurrency"]
 
 
         print(f"\nTransfer created successfully! \033[1;32;40m{target_value} {target_Currency}   \033[0;37;40m({self.sourceAmount} {source_Currency})     [{created_date}]")
+        print("-----------------------------------------------------------------------------------------------------------------")
+
 
     def send_money(self):
         self.quote()
         self.create_transfer()
+
+
+    def cancel_transfer(self):
+        transfer_id = self.last_transfer["id"]
+        transfer_rate = self.last_transfer["rate"]
+
+        print(f"Since the new threshold was reached, we're cancelling the previous transfer")
+
+        url = f"https://api.transferwise.com/v1/transfers/{transfer_id}/cancel"
+        headers = {"Authorization": f"Bearer {API_TOKEN}"}
+
+        response = requests.put(url=url, headers=headers).json()
+        
+        try:
+            print(f"The transfer created on {response['created']} was successfully canceled (Commercial Rate: {transfer_rate})")
+        except KeyError:
+            print(f"Something went wrong while canceling the transfer. Error: {response['error']}")
+        
+        else:
+            self.last_transfer = {}
+
+        

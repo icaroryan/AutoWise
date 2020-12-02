@@ -22,8 +22,10 @@ def clear():
         system('clear')
 
 currency = None
+current_recipient = None
 
 def auto_send():
+    
     print(f"Activating TransferWise MODE...\n")
     print(f"\nDon't worry, only you will have access to these information!\n")
 
@@ -51,6 +53,7 @@ def auto_send():
             threshold = float(input(f"\nSend money when 1 {to_currency} moves bellow {c.get_symbol(from_currency)} "))
             threshold = format(threshold, ".4f")
             currency.set_threshold(threshold)
+            print("We have Upper and Lower Bounds to GUARANTEE that you get the best Exchange Rate possible")
 
 
             recipients = currency.get_recipients()    
@@ -65,6 +68,9 @@ def auto_send():
             option = int(input(f"\nEnter the recipient you want to send money: "))
             recipient_target = option - 1
             currency.set_recipient(recipients[recipient_target])
+
+            global current_recipient
+            current_recipient = currency.get_recipient()
         
         except Exception as e:
             print(e)
@@ -108,34 +114,44 @@ while True:
 
 clear()
 
-if auto_mode:
-    threshold = currency.get_threshold()
 
-print("EXCHANGE RATE TRACKER       TransferWise Mode: {auto_mode}    {threshold}       Refresh Rate: 1m".format(auto_mode= auto_mode, threshold= f"(Threshold: {threshold} {from_currency})"if auto_mode else ""))
-
-if auto_mode:
-    threshold = float(threshold)
-
+print("EXCHANGE RATE TRACKER       TransferWise Mode: {}       Refresh Rate: 1m\n".format(auto_mode))
+rate_index = 0
 
 while True:
+    # upper_threshold = currency.get_threshold()[0]
+    user_threshold = currency.get_threshold()[1]
+    # lower_threshold = currency.get_threshold()[2]
+    current_threshold = currency.get_threshold()[rate_index]
+
     rate = currency.get_rate()
     rate_f = float(rate)
 
 
-    if auto_mode and (rate_f <= threshold):
-        print("\rThreshold reached!! Sending money...")
+    if auto_mode and (rate_f <= current_threshold):
+        if rate_index == 0:
+            threshold_type = "Upper"
+        elif rate_index == 2:
+            threshold_type = "Lower"
+        else:
+            threshold_type = ""
+
+        print(f"\r{threshold_type} Threshold reached!! Sending money to {current_recipient['accountHolderName']}...")
         beepy.beep(sound='ping')
         currency.send_money()
+        rate_index += 1
+
+    if rate_index > 2:
         break
 
     timer = 60
 
     for i in range(timer):
         remaining = str(timer - i)
-        sys.stdout.write(f"\r\033[1;32;40m1 {to_currency} = {rate} {from_currency}       \033[0;37;40m{remaining.zfill(2)}s ")
+        sys.stdout.write("\r\033[1;32;40m1 {to_currency} = {rate} {from_currency}       \033[0;37;40m{remaining_seconds}s                {threshold}".format(to_currency=to_currency, rate=rate, from_currency=from_currency, remaining_seconds=remaining.zfill(2), threshold = f"(Threshold: {user_threshold} {from_currency})"if auto_mode else ""))
         sys.stdout.flush()
         sleep(1)
 
 
-input("Press ENTER to exit")
+input("Congratulations!!! You got the best rate as possible on TransferWise! Press enter to finish.")
     
