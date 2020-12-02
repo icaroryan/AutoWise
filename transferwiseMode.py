@@ -42,8 +42,8 @@ class TransferWise:
                 break
             # fluctuation = div.select_one(".parentheses.arial_20").get_text()
 
-            rate = round(rate, 4)
-
+            
+        rate = round(rate, 4)
         return rate
 
     
