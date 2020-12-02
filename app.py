@@ -40,7 +40,7 @@ def auto_send():
             currency.set_profile_id(profile_id)
 
             rate = currency.get_rate()
-            print(f"Current Exchange Rate: 1 {to_currency} = {rate} {from_currency}")
+            print(f"Current Exchange Rate: 1 {to_currency} = \033[1;32;40m{rate} {from_currency}\033[0;37;40m")
 
             amount = float(input(f"How much {from_currency} you want to send? (without commas, ex. 12000) "))
             # targetAmount
@@ -61,7 +61,7 @@ def auto_send():
 
             print(f"\n\n---Recipient Accounts---\n")
             for i, recipient in enumerate(recipients):
-                print(f"{i + 1}: {recipient['accountHolderName']} ({recipient['country']}/{recipient['currency']}) > Transit & Account Number: {recipient['details']['transitNumber']} - {recipient['details']['accountNumber']}  | Account Type: {recipient['details']['accountType']}")
+                print(f"{i + 1}: \033[1;34;40m{recipient['accountHolderName']} ({recipient['country']}/{recipient['currency']})\033[0;37;40m > Transit & Account Number: {recipient['details']['transitNumber']} - {recipient['details']['accountNumber']}  | Account Type: {recipient['details']['accountType']}")
             option = int(input(f"\nEnter the recipient you want to send money: "))
             recipient_target = option - 1
             currency.set_recipient(recipients[recipient_target])
@@ -132,7 +132,7 @@ while True:
 
     for i in range(timer):
         remaining = str(timer - i)
-        sys.stdout.write(f"\r\033[1;32;40m1 {to_currency} = {rate} {from_currency}       \033[0;37;40m{remaining.zfill(2)}s")
+        sys.stdout.write(f"\r\033[1;32;40m1 {to_currency} = {rate} {from_currency}       \033[0;37;40m{remaining.zfill(2)}s ")
         sys.stdout.flush()
         sleep(1)
 

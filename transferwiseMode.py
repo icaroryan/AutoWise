@@ -27,15 +27,22 @@ class TransferWise:
     def get_rate(self):
         url = f"https://transferwise.com/gb/currency-converter/{self.to_currency}-to-{self.from_currency}-rate"
 
-        resp = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
-        soup = BeautifulSoup(resp.text, 'lxml')
-        span = soup.body.find("span", attrs={"class": "text-success"})
+        while True:
+            resp = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
+            soup = BeautifulSoup(resp.text, 'lxml')
+            span = soup.body.find("span", attrs={"class": "text-success"})
         
-        # rate = div.select_one(".inlineblock.arial_26").get_text()
-        rate = float(span.get_text())
-        # fluctuation = div.select_one(".parentheses.arial_20").get_text()
+            # rate = div.select_one(".inlineblock.arial_26").get_text()
+            try:
+                rate = float(span.get_text())
+            # Make sure the page is returning a value
+            except AttributeError:
+                continue
+            else:
+                break
+            # fluctuation = div.select_one(".parentheses.arial_20").get_text()
 
-        rate = round(rate, 4)
+            rate = round(rate, 4)
 
         return rate
 
