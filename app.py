@@ -153,7 +153,7 @@ while True:
 
     for i in range(timer):
         remaining = str(timer - i)
-        sys.stdout.write("\r\033[1;32;40m1 {to_currency} = {rate} {from_currency}       \033[0;37;40m{remaining_seconds}s                {threshold}".format(
+        sys.stdout.write("\r\033[1;32;40m1 {to_currency} = {rate} {from_currency}       \033[0;37;40m{remaining_seconds}s                {threshold} ".format(
             to_currency=to_currency, rate=rate, from_currency=from_currency, remaining_seconds=remaining.zfill(2), threshold=f"(Threshold: {user_threshold} {from_currency})"if auto_mode else ""))
         sys.stdout.flush()
         sleep(1)

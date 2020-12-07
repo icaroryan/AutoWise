@@ -117,7 +117,7 @@ class TransferWise:
         response = response.json()
         ############
         if self.last_transfer:
-            self.cancel_transfer()
+            self.last_idle_transfer = self.last_transfer.copy()
 
         self.quote_id = response['id']
 
@@ -178,12 +178,16 @@ class TransferWise:
         rate = response["rate"]
         # source_value = response["sourceValue"]
         source_Currency = response["sourceCurrency"]
-        target_value = round(self.sourceAmount * rate, 2)
+        target_value = response["targetValue"]
         # target_value =  format(source_value * rate, '.2f')
         target_Currency = response["targetCurrency"]
 
         print(
             f"\nTransfer created successfully! \033[1;32;40m{target_value} {target_Currency}   \033[0;37;40m({self.sourceAmount} {source_Currency})     [{created_date}]")
+
+        if self.last_idle_transfer:
+            self.cancel_transfer()
+
         print("-----------------------------------------------------------------------------------------------------------------\n")
 
     def send_money(self):
@@ -191,8 +195,11 @@ class TransferWise:
         self.create_transfer()
 
     def cancel_transfer(self):
-        transfer_id = self.last_transfer["id"]
-        transfer_rate = self.last_transfer["rate"]
+        
+        # transfer_id = self.last_transfer["id"]
+        transfer_id = self.last_idle_transfer["id"]
+        # transfer_rate = self.last_transfer["rate"]
+        transfer_rate = self.last_idle_transfer["rate"]
 
         print(
             f"Since the new threshold was reached, we're cancelling the previous transfer")
@@ -210,4 +217,4 @@ class TransferWise:
                 f"Something went wrong while canceling the transfer. Error: {response['error']}")
 
         else:
-            self.last_transfer = {}
+            self.last_idle_transfer = {}
