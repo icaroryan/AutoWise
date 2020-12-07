@@ -25,6 +25,7 @@ class TransferWise:
         self.to_currency = to_currency
 
         self.last_transfer = {}
+        self.last_idle_transfer = {}
         self.thresholds = []
 
     # Tracker (GET_EXCHANGE_RATES) -> Create a function that gets the chosen exchange rates
@@ -123,6 +124,7 @@ class TransferWise:
 
         self.sourceAmount = response['sourceAmount']
         targetAmount = response['targetAmount']
+        self.last_idle_transfer["targetAmount"] = targetAmount
         fee = response['fee']
 
         commercial_rate = format(
@@ -180,7 +182,7 @@ class TransferWise:
         source_Currency = response["sourceCurrency"]
         target_value = response["targetValue"]
         # target_value =  format(source_value * rate, '.2f')
-        target_Currency = response["targetCurrency"]
+        target_Currency = self.last_idle_transfer["targetAmount"]
 
         print(
             f"\nTransfer created successfully! \033[1;32;40m{target_value} {target_Currency}   \033[0;37;40m({self.sourceAmount} {source_Currency})     [{created_date}]")
@@ -202,7 +204,7 @@ class TransferWise:
         transfer_rate = self.last_idle_transfer["rate"]
 
         print(
-            f"Since the new threshold was reached, we're cancelling the previous transfer")
+            f"\nSince a lower threshold was reached, we're cancelling the previous transfer")
 
         url = f"https://api.transferwise.com/v1/transfers/{transfer_id}/cancel"
         headers = {"Authorization": f"Bearer {API_TOKEN}"}
