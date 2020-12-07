@@ -53,10 +53,10 @@ class TransferWise:
 
     def set_threshold(self, threshold):
         threshold = float(threshold)
-        # 0.5% more
+        # 0.3% more
         upper_bound = round(threshold * 1.003, 4)
-        # 0.5% less
-        lower_bound = round(threshold * 0.995, 4)
+        # 0.3% less
+        lower_bound = round(threshold * 0.998, 4)
         self.thresholds.extend([upper_bound, threshold, lower_bound])
 
     def set_amount(self, amount):
@@ -124,7 +124,6 @@ class TransferWise:
 
         self.sourceAmount = response['sourceAmount']
         targetAmount = response['targetAmount']
-        self.last_idle_transfer["targetAmount"] = targetAmount
         fee = response['fee']
 
         commercial_rate = format(
@@ -178,11 +177,11 @@ class TransferWise:
 
         created_date = response["created"]
         rate = response["rate"]
-        # source_value = response["sourceValue"]
+        source_value = response["sourceValue"]
         source_Currency = response["sourceCurrency"]
-        target_value = response["targetValue"]
-        # target_value =  format(source_value * rate, '.2f')
-        target_Currency = self.last_idle_transfer["targetAmount"]
+
+        target_value = round(source_value * rate, 2)
+        target_Currency = response["targetCurrency"]
 
         print(
             f"\nTransfer created successfully! \033[1;32;40m{target_value} {target_Currency}   \033[0;37;40m({self.sourceAmount} {source_Currency})     [{created_date}]")
@@ -190,7 +189,7 @@ class TransferWise:
         if self.last_idle_transfer:
             self.cancel_transfer()
 
-        print("-----------------------------------------------------------------------------------------------------------------\n")
+        print("----------------------------------------------------------------------------------------------\n")
 
     def send_money(self):
         self.quote()
