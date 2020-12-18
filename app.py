@@ -3,7 +3,7 @@ import re
 from os import system, name
 from time import sleep
 import sys
-import beepy
+#import beepy
 
 
 from forex_python.converter import CurrencyCodes
@@ -45,19 +45,20 @@ def auto_send():
             print(
                 f"Current Exchange Rate: 1 {to_currency} = \033[1;32;40m{rate} {from_currency}\033[0;37;40m")
 
-            amount = float(input(
-                f"How much {from_currency} you want to send? (without commas, ex. 12000) "))
-            # targetAmount
-            # sourceAmount
-
-            currency.set_amount(amount)
-
             threshold = float(input(
                 f"\nSend money when 1 {to_currency} moves bellow {c.get_symbol(from_currency)} "))
             threshold = format(threshold, ".4f")
             currency.set_threshold(threshold)
             print(
                 "We have Upper and Lower Bounds to GUARANTEE that you get the best Exchange Rate possible.\nOnce a new threshold is reached, we create a new transfer and cancell your previous one to refresh it")
+
+
+            amount = float(input(
+                f"How much {from_currency} you want to send? (without commas, ex. 12000) "))
+            # targetAmount
+            # sourceAmount
+            currency.set_amount(amount)
+
 
             recipients = currency.get_recipients()
 
@@ -147,7 +148,7 @@ try:
             print(
                 f"\r{threshold_type}Threshold reached!! Sending money to {current_recipient['accountHolderName']}...")
             currency.send_money()
-            beepy.beep(sound='ping')
+            #beepy.beep(sound='ping')
             rate_index += 1
 
         if rate_index > 2:
