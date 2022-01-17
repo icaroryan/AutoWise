@@ -4,9 +4,9 @@
 
 # email: yurdemiydi@nedoz.com
 
+import requests
 from dotenv import load_dotenv
 import os
-import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 import uuid
@@ -35,7 +35,7 @@ class TransferWise:
 
         while True:
             resp = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
-            soup = BeautifulSoup(resp.text, 'lxml')
+            soup = BeautifulSoup(resp.text, 'html.parser')
             span = soup.body.find("span", attrs={"class": "text-success"})
 
             # rate = div.select_one(".inlineblock.arial_26").get_text()
@@ -48,15 +48,15 @@ class TransferWise:
                 break
             # fluctuation = div.select_one(".parentheses.arial_20").get_text()
 
-        rate = round(rate, 4)
+        rate = round(rate, 5)
         return rate
 
     def set_threshold(self, threshold):
         threshold = float(threshold)
         # 0.3% more
-        upper_bound = round(threshold * 1.003, 4)
+        upper_bound = round(threshold * 1.003, 5)
         # 0.3% less
-        lower_bound = round(threshold * 0.998, 4)
+        lower_bound = round(threshold * 0.998, 5)
         self.thresholds.extend([upper_bound, threshold, lower_bound])
 
     def set_amount(self, amount):
@@ -82,10 +82,10 @@ class TransferWise:
             for i, profile in enumerate(response_json):
                 try:
                     print(
-                        f"{i + 1}: {profile['details']['firstName']} {profile['details']['lastName']} > Type: {profile['type']} (ID: {profile['id']})")
+                        f"{i + 1}: \033[1;34;40m{profile['details']['firstName']} {profile['details']['lastName']}\033[0;37;48m > Type: {profile['type']} (ID: {profile['id']})")
                 except KeyError:
                     print(
-                        f"{i + 1}: {profile['details']['name']} > Type: {profile['type']} (ID: {profile['id']})")
+                        f"{i + 1}: \033[1;34;40m{profile['details']['name']}\033[0;37;48m > Type: {profile['type']} (ID: {profile['id']})")
 
             option = int(input(
                 "\nWe noticed you have more than one profile in your account. \nEnter the profile number you want to send money from: "))
@@ -98,9 +98,9 @@ class TransferWise:
         self.profile_id = profile_id
 
     def quote(self):
-
         # url = f"https://api.sandbox.transferwise.tech/v1/quotes"
         url = f"https://api.transferwise.com/v1/quotes"
+
         headers = {"Authorization": f"Bearer {API_TOKEN}",
                    "Content-Type": "application/json"}
         data = {"profile": self.profile_id,
@@ -173,7 +173,12 @@ class TransferWise:
 
         response = requests.post(url=url, headers=headers, json=data).json()
 
+        # if response["code"] == "ERROR":
+        #     print(response["message"])
+        #     return
+
         self.last_transfer["id"] = response["id"]
+        self.last_transfer["rate"] = response["rate"]
 
         created_date = response["created"]
         rate = response["rate"]
@@ -199,20 +204,23 @@ class TransferWise:
         
         # transfer_id = self.last_transfer["id"]
         transfer_id = self.last_idle_transfer["id"]
-        # transfer_rate = self.last_transfer["rate"]
+        current_transfer_rate = self.last_transfer["rate"]
         transfer_rate = self.last_idle_transfer["rate"]
 
         print(
-            f"\nSince a lower threshold was reached, we're cancelling the previous transfer")
+            f"\nNice, You got an even better rate! We're keeping the best one.")
 
+        # url = f"https://api.sandbox.transferwise.tech/v1/transfers/{transfer_id}/cancel"
         url = f"https://api.transferwise.com/v1/transfers/{transfer_id}/cancel"
         headers = {"Authorization": f"Bearer {API_TOKEN}"}
 
         response = requests.put(url=url, headers=headers).json()
+        
+        date_created = response['created']
 
         try:
             print(
-                f"The transfer created on {response['created']} was successfully canceled (Commercial Rate: {transfer_rate})")
+                f"Exchange rate decreased from {transfer_rate} to {current_transfer_rate}!")
         except KeyError:
             print(
                 f"Something went wrong while canceling the transfer. Error: {response['error']}")
