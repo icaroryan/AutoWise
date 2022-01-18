@@ -16,6 +16,11 @@ Upon the desired rate is reached, the script will utilize REST Api to perform an
 - Select the recipient account to receive the transfer.
 - Open an automatic transfer on Wise (ex TransferWise) to send money internationally when the best rate is reached.
 
+## 💎 Usage
+```sh
+python app.py
+```
+
 ## 🔧 Setup
 
 1. Login into your TransferWise (aka Wise)
