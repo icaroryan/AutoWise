@@ -4,7 +4,17 @@ A Python script to help you save money when sending money internationally. This 
 
 Upon the desired rate is reached, the script will utilize REST Api to perform an API request to create a transaction on TransferWise, a platform to send and receive money from overseas. Upon a new lowest exchange rate, this application will perform a new request to the API to update the transaction. Say goodbye to the hassle of timing the market to get the best conversion rate between two currencies, AutoWise does it for you!
 
+Table of contents
+=================
 
+<!--ts-->
+   * [Tech Stack](#-tech-stack)
+   * [Features](#%EF%B8%8F-features)
+   * [Usage](#-usage)
+   * [Application Demo](#-application-demo)
+   * [Setup](#-setup)
+
+<!--te-->
 ## 🛠 Tech Stack
 | <img src="https://cdn3.iconfinder.com/data/icons/logos-and-brands-adobe/512/267_Python-512.png" width="40"> |
 - **Languages Used**: Python, RESTful API, BeautifulSoup </br>
@@ -22,7 +32,7 @@ Upon the desired rate is reached, the script will utilize REST Api to perform an
 python app.py
 ```
 
-## 👀 Application Preview
+## 👀 Application Demo
 
 ### Don't time the market. Let us do it for you! 📉
 
