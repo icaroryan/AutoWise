@@ -28,9 +28,13 @@ Table of contents
 - Open an automatic transfer on Wise (ex TransferWise) to send money internationally when the best rate is reached.
 
 ## 💎 Usage
-```sh
-python app.py
-```
+1. Clone repository with ```git clone https://github.com/icaroryan/AutoWise.git```
+2. Follow [setup](#-setup) instructions
+3. Open Command line in the application folder
+4. Run command ```python app.py ```
+5. Select currencies to send money from/to
+6. Select the target rate, amount and recipient account
+7. Relax, and let us do the hard work
 
 ## 👀 Application Demo
 
