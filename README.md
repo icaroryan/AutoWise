@@ -12,6 +12,7 @@ Table of contents
    * [Features](#%EF%B8%8F-features)
    * [Usage](#-usage)
    * [Application Demo](#-application-demo)
+   * [Environment Variables](#-environment-variables)
    * [Setup](#-setup)
 
 <!--te-->
