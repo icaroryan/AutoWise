@@ -88,7 +88,9 @@ After finding the best conversion rate, your transfer will be secured on Wise.
 ![image](https://user-images.githubusercontent.com/50868010/150047173-c9a4c00e-2664-419a-b52e-7d4d0036516f.png)
 
 
-
+## 🔑 Environment Variables
+To run the application, you will need to add the following environment variable: <br/> <br/>
+```API_TOKEN```
 
 ## 🔧 Setup
 
@@ -112,7 +114,7 @@ After finding the best conversion rate, your transfer will be secured on Wise.
 ![image](https://user-images.githubusercontent.com/50868010/149876803-fff22c58-bbe4-46ab-97b5-7fca464d8294.png)
 
 8. Inside the AutoWise folder, you'll find a file called ".env.example". Open it and append your key after "API_TOKEN=" <br/>
-e.g. API_TOKEN=6abcdac4-7d4c-4c45-bbf8-aeebc628d3ed
+e.g. ```API_TOKEN=6abcdac4-7d4c-4c45-bbf8-aeebc628d3ed```
 10. Save the file and rename it to ".env"
 
 ![2022-01-18_00-38-37_AdobeCreativeCloudExpress (1)](https://user-images.githubusercontent.com/50868010/149877643-e0974ccf-5588-4c88-b1b7-13ec25960e93.gif)
