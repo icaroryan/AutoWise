@@ -2,7 +2,7 @@
 
 A Python script to help you save money when sending money internationally. This script uses BeautifulSoup to track the fluctuations in conversion rates between currencies and find the lowest exchange rate to send money from one country to another.
 
-Upon the desired rate is reached, the script will utilize REST Api to perform an API request to create a transaction on TransferWise, a platform to send and receive money from overseas. Upon a new lowest exchange rate, this application will perform a new request to the API to update the transaction. Say goodbye to the hassle of timing the market to get the best conversion rate between two currencies, AutoWise does it for you!
+Once the desired rate is reached, the script will utilize REST Api to perform an API request to create a transaction on TransferWise, a platform to send and receive money from overseas. Upon detecting a lower exchange rate than the current transaction, this application will perform a new request to the API to update the transaction. Say goodbye to the hassle of timing the market to get the best conversion rate between two currencies. AutoWise will do it for you!
 
 Table of contents
 =================
@@ -48,13 +48,13 @@ In this screen, the user will select the currencies that they want to sent money
 
 
 ### **2. Selecting target rate, amount and recipient account**
-After selecting the currencies, the user will be able to choose his target exchange rate, amount , and one of recipient added in his account. <br />
+After selecting the currencies, the user will be able to choose their target exchange rate, amount to be sent, and a recipient from their recipient list. <br />
 
 ![image](https://user-images.githubusercontent.com/50868010/150044667-21de3ec8-e923-4889-860e-3776d0409ab6.png)
 
 
 ### **3. Tracking the Forex Market 📈**
-The software will take into consideration the user target rate and will place a transfer when the exchange rate between the two currencies chosen before is less or equals the target rate.
+The software will take into consideration the user's target rate, and will place a transfer when the exchange rate of their selected currencies reaches below, or is at least equal to, the user's desired rate.
 
 ![image](https://user-images.githubusercontent.com/50868010/150044761-0fb4d27b-59f7-421e-9a51-c92d22c4b923.png)
 
@@ -64,7 +64,7 @@ As you can see in the picture below, we started on a high market, which isn't wh
 
 
 ### **4. Buying the DIP 📉**
-When the script find the best moment to create a transfer, it'll do it for you automatically. Therefore, you don't need to keep watching all those graphs 24/7.
+When the script finds the best moment to create a transfer, it will do so automatically, thus, eliminating the need for the user to watch the graphs 24/7.
 
 
 ![image](https://user-images.githubusercontent.com/50868010/150045266-b4d3b095-bb57-475a-9bc0-07391c5036e5.png)
@@ -74,7 +74,7 @@ When the script find the best moment to create a transfer, it'll do it for you a
 
 ### **5. Buying the DIP (again) 📉**
 The best part of it is that it'll keep getting the lowest Exchange Rate as long as the script is in execution. <br/ >
-Not only did AutoWise manage to reach the target rate, but it went above and beyond by finding an even better exchange rate.
+This is evident in the images below; not only did AutoWise manage to reach the target rate, but it went above and beyond by finding an even better exchange rate.
 
 ![image](https://user-images.githubusercontent.com/50868010/150046502-dca4ded2-fade-48eb-b17a-80397a94340d.png)
 
@@ -90,7 +90,7 @@ After finding the best conversion rate, your transfer will be secured on Wise.
 
 
 ## 🔑 Environment Variables
-To run the application, you will need to add the following environment variable: <br/> <br/>
+To run the application, the following environment variable must be added: <br/> <br/>
 ```API_TOKEN```
 
 ## 🔧 Setup
