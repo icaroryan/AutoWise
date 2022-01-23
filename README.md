@@ -2,7 +2,7 @@
 
 A Python script to help you save money when sending money internationally. This script uses BeautifulSoup to track the fluctuations in conversion rates between currencies and find the lowest exchange rate to send money from one country to another.
 
-Once the desired rate is reached, the script will utilize REST Api to perform an API request to create a transaction on TransferWise, a platform to send and receive money from overseas. Upon detecting a lower exchange rate than the current transaction, this application will perform a new request to the API to update the transaction. Say goodbye to the hassle of timing the market to get the best conversion rate between two currencies. AutoWise will do it for you!
+Once the desired rate is reached, the script will utilize REST Api to perform an API request to create a transaction on TransferWise, a platform to send and receive money from overseas. Upon detecting a lower exchange rate than the current transaction, this application will perform a new request to the API to update the transfer. Say goodbye to the hassle of timing the market to get the best conversion rate between two currencies. AutoWise will do it for you!
 
 Table of contents
 =================
