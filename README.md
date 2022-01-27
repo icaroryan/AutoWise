@@ -17,7 +17,8 @@ Table of contents
 
 <!--te-->
 ## 🛠 Tech Stack
-| <img src="https://cdn3.iconfinder.com/data/icons/logos-and-brands-adobe/512/267_Python-512.png" width="40"> |
+
+| <img width="40px" height="40px" src="https://github.com/devicons/devicon/blob/master/icons/python/python-original.svg"/> |
 - **Languages Used**: Python, RESTful API, BeautifulSoup </br>
 
 ## ⚙️ Features
