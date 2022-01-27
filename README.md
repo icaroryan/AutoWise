@@ -82,7 +82,7 @@ This is evident in the images below; not only did AutoWise manage to reach the t
 ![wise10](https://user-images.githubusercontent.com/50868010/150047331-e761782b-34c7-4a6f-959a-2726f633590e.jpg)
 
 
-*Rate progression in a couple of hours: *
+**Results progression in only a couple of hours: 0.22677 > 022559 > 0.22503**
 
 ### **6. Rate guaranteed on Wise 💲**
 After finding the best conversion rate, your transfer will be secured on Wise.
