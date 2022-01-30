@@ -34,9 +34,6 @@ print("============== Welcome to AutoWise ==============\n\n")
 
 def auto_send():
 
-    print(f"\nActivating TransferWise MODE...\n")
-
-
     clear()
     while True:
         try:
@@ -89,13 +86,13 @@ def auto_send():
 
 
 from_currency = input(
-    f"Source currency code (send money)? (e.g. CAD) ")
+    f"Source currency code (FROM)? (e.g. CAD) ")
 from_currency = from_currency.upper()
 
 
 # Prompt the user for the Currencies
 to_currency = input(
-    f"Target currency code (receive money)? (e.g. USD) ")
+    f"Target currency code (TO)? (e.g. USD) ")
 to_currency = to_currency.upper()
 
 
@@ -107,7 +104,7 @@ auto_mode = auto_send()
 clear()
 
 
-print("EXCHANGE RATE TRACKER       TransferWise Mode: {}       Refresh Rate: 1m\n".format("On" if auto_mode else "Off"))
+print("AutoWise                                        Refresh Rate: 1m\n")
 rate_index = 0
 
 try:
@@ -121,21 +118,23 @@ try:
         rate = currency.get_rate()
         rate_f = float(rate)
 
-        if auto_mode and (rate_f <= current_threshold):
+        if auto_mode and (round(rate_f, 4) <= current_threshold):
             threshold_type = ""
             if rate_index == 0:
-                threshold_type = "Upper"
+                threshold_type = "Upper "
             elif rate_index == 1:
-                threshold_type = ""
+                threshold_type = " "
             elif rate_index == 2:
-                threshold_type = "Lowest"
+                threshold_type = "Lowest "
             else:
-                threshold_type = "New lowest"
+                threshold_type = "New lowest "
 
             print(
-                f"\r{threshold_type} Threshold reached!! Sending money to {current_recipient['accountHolderName']}...")
+                f"\r{threshold_type}Threshold reached!! Sending money to {current_recipient['accountHolderName']}...")
             currency.send_money()
-            rate_index += 1
+
+            if rate_index <= 2:
+                rate_index += 1
 
         if rate_index > 2:
             current_threshold = round(current_threshold * 0.998, 5)

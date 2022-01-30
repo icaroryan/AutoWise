@@ -54,7 +54,7 @@ class TransferWise:
     def set_threshold(self, threshold):
         threshold = float(threshold)
         # 0.3% more
-        upper_bound = round(threshold * 1.003, 5)
+        upper_bound = round(threshold * 1.002, 5)
         # 0.3% less
         lower_bound = round(threshold * 0.998, 5)
         self.thresholds.extend([upper_bound, threshold, lower_bound])
@@ -127,10 +127,10 @@ class TransferWise:
         fee = response['fee']
 
         commercial_rate = format(
-            (self.sourceAmount - fee) / targetAmount, '.4f')
+            (self.sourceAmount - fee) / targetAmount, '.5f')
         self.last_transfer["rate"] = commercial_rate
 
-        vet = format(self.sourceAmount / targetAmount, '.4f')
+        vet = format(self.sourceAmount / targetAmount, '.5f')
 
         createdTime = response['createdTime']
         objDate = datetime.strptime(createdTime, "%Y-%m-%dT%H:%M:%S.%f%z")
