@@ -5,7 +5,7 @@ from time import sleep
 import sys
 from forex_python.converter import CurrencyCodes
 
-from TransferWise import TransferWise
+import src.TransferWise as TransferWise
 
 
 class AutoWise:

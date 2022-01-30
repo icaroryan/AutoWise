@@ -1,6 +1,6 @@
 from os import system, name
 from forex_python.converter import CurrencyCodes
-from AutoWise import AutoWise
+import src.AutoWise as AutoWise
 
 
 def main():
