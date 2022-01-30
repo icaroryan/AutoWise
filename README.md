@@ -34,10 +34,10 @@ Table of contents
 2. Follow [setup](#-setup) instructions
 3. Open Command line in the application folder
 4. Install all needed packages by running the command  ```pip install -r requirements.txt ```
-4. Run app with command ```python app.py ```
-5. Select currencies to send money from/to
-6. Select the target rate, amount and recipient account
-7. Relax, and let us do the hard work
+5. Run app with command ```python app.py ```
+6. Select currencies to send money from/to
+7. Select the target rate, amount and recipient account
+8. Relax, and let us do the hard work
 
 ## 👀 Application Demo
 
