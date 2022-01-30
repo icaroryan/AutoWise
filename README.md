@@ -33,7 +33,8 @@ Table of contents
 1. Clone repository with ```git clone https://github.com/icaroryan/AutoWise.git```
 2. Follow [setup](#-setup) instructions
 3. Open Command line in the application folder
-4. Run command ```python app.py ```
+4. Install all needed packages by running the command  ```pip install -r requirements.txt ```
+4. Run app with command ```python app.py ```
 5. Select currencies to send money from/to
 6. Select the target rate, amount and recipient account
 7. Relax, and let us do the hard work
