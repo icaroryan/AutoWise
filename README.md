@@ -13,7 +13,7 @@ Table of contents
    * [Usage](#-usage)
    * [Application Demo](#-application-demo)
    * [Environment Variables](#-environment-variables)
-   * [Setup](#-setup)
+   * [Setup](#-wise-setup)
 
 <!--te-->
 ## 🛠 Tech Stack
@@ -31,7 +31,7 @@ Table of contents
 
 ## 💎 Usage
 1. Clone repository with ```git clone https://github.com/icaroryan/AutoWise.git```
-2. Follow [setup](#-setup) instructions
+2. Follow [setup](#-wise-setup) instructions
 3. Open Command line in the application folder
 4. Install all needed packages by running the command  ```pip install -r requirements.txt ```
 5. Run app with command ```python app.py ```
@@ -95,7 +95,7 @@ After finding the best conversion rate, your transfer will be secured on Wise.
 To run the application, the following environment variable must be added: <br/> <br/>
 ```API_TOKEN```
 
-## 🔧 Setup
+## 🔧 Wise Setup
 
 1. Login into your TransferWise (aka Wise)
 2. Open the account settings
